@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, Button} from 'react-native';
-import NavigationUtil from './navigator/NavigationUtil'
+import NavigationUtil from '../navigator/NavigationUtil'
 
 export default class WelcomePage extends Component {
     componentDidMount() {

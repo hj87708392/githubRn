@@ -1,10 +1,9 @@
-import React from 'react';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
-import HomePage from '../HomePage'; 
-import DetailPage from '../DetailPage';
-import WelcomeHomPage from '../WelcomePage';
+import HomePage from '../views/HomePage'; 
+import DetailPage from '../views/DetailPage';
+import WelcomeHomPage from '../views/WelcomePage';
 
 export const InitNavigator = createStackNavigator({
         WelcomeHomPage: {

@@ -8,8 +8,8 @@ import MyPage from './MyPage';
 import TrendingPage from './TrendingPage';
 // import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import DynamicTabNavigator from './navigator/DynamicTabNavigator'
-import NavigationUtil from './navigator/NavigationUtil';
+import DynamicTabNavigator from '../navigator/DynamicTabNavigator'
+import NavigationUtil from '../navigator/NavigationUtil';
 export default class HomePage extends Component {
     
 

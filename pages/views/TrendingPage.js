@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
-// import {connect} from 'react-redux';
-// import actions from '../action';
+import {connect} from 'react-redux';
+import actions from '../store/action';
 
 class TrendingPage extends Component {
     render() {
@@ -9,6 +9,11 @@ class TrendingPage extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.welcome}>TrendingPage</Text>
+                <Button
+                    title={'修改主题'}
+                    onPress={() => this.props.onThemeChange('red')}
+                    // onPress={() => this.props.onChangeTheme('#r')}
+                />
             </View>
         );
     }
@@ -29,8 +34,8 @@ const styles = StyleSheet.create({
     },
 });
 
-// const mapDispatchToProps = dispatch => ({
-//     onThemeChange: theme => dispatch(actions.onThemeChange(theme)),
-// });
-export default TrendingPage
-// export default connect(null, mapDispatchToProps)(TrendingPage);
+const mapDispatchToProps = dispatch => ({
+    onThemeChange: theme => dispatch(actions.onThemeChange(theme)),
+});
+// export default TrendingPage
+export default connect(null, mapDispatchToProps)(TrendingPage);

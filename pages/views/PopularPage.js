@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet,SafeAreaView,Button} from 'react-native';
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import {createAppContainer} from 'react-navigation';
-import NavigationUtil from './navigator/NavigationUtil';
+import NavigationUtil from '../navigator/NavigationUtil';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-export default class PopularPage extends Component {
+import {connect} from 'react-redux';
+import actions from '../store/action';
+class PopularPage extends Component {
     constructor(props) {
         super(props);
         this.tabNames = ['Java', 'Android', 'iOS', 'React', 'React Native', 'PHP'];
@@ -43,18 +45,21 @@ export default class PopularPage extends Component {
         ));
         return (
             <SafeAreaView style={styles.container}>
-                <TabNavigator />
-                 <Button
-                    title={'修改主题'}
-                    // onPress={() => this.props.onThemeChange('#8a3')}
-                    onPress={() =>{
-                        navigation.setParams({
-                            theme:{
-                                tintColor:'blue'
-                            }
-                        })
-                    } }
-                />
+                 <TabNavigator />
+                <View>
+                    <Button
+                        title={'修改主题'}
+                        onPress={() => this.props.onThemeChange('red')}
+                        // onPress={() =>{
+                        //     navigation.setParams({
+                        //         theme:{
+                        //             tintColor:'blue'
+                        //         }
+                        //     })
+                        // } }
+                    />
+                </View>
+               
             </SafeAreaView>
         );
     }
@@ -79,7 +84,7 @@ class PopularTab extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 30,
+        // marginTop: 130,
     },
     welcome: {
         fontSize: 20,
@@ -99,3 +104,7 @@ const styles = StyleSheet.create({
         marginBottom: 6,
     },
 });
+const mapDispatchToProps = dispatch => ({
+    onThemeChange: theme => dispatch(actions.onThemeChange(theme)),
+});
+export default connect(null, mapDispatchToProps)(PopularPage);
