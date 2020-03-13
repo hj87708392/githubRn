@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet,SafeAreaView,Button} from 'react-native';
+import {View, Text, StyleSheet,SafeAreaView,Button,FlatList,RefreshControl} from 'react-native';
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
-import {createAppContainer} from 'react-navigation';
+import {createAppContainer, ThemeColors} from 'react-navigation';
 import NavigationUtil from '../navigator/NavigationUtil';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
 import actions from '../store/action';
-class PopularPage extends Component {
+const URL = 'https://api.github.com/search/repositories?q=';
+const QUERY_STR = '&sort=stars';
+const THEME_COLOR='red'
+export default class PopularPage extends Component {
     constructor(props) {
         super(props);
         this.tabNames = ['Java', 'Android', 'iOS', 'React', 'React Native', 'PHP'];
@@ -16,7 +19,7 @@ class PopularPage extends Component {
         const tabs = {};
         this.tabNames.forEach((item, index) => {
             tabs[`tab${index}`] = {
-                screen: props => <PopularTab {...props} tabLabel={item}/>,
+                screen: props => <PopularTabPage {...props} tabLabel={item}/>,
                 navigationOptions: {
                     title: item,
                 },
@@ -46,20 +49,6 @@ class PopularPage extends Component {
         return (
             <SafeAreaView style={styles.container}>
                  <TabNavigator />
-                <View>
-                    <Button
-                        title={'修改主题'}
-                        onPress={() => this.props.onThemeChange('red')}
-                        // onPress={() =>{
-                        //     navigation.setParams({
-                        //         theme:{
-                        //             tintColor:'blue'
-                        //         }
-                        //     })
-                        // } }
-                    />
-                </View>
-               
             </SafeAreaView>
         );
     }
@@ -67,15 +56,55 @@ class PopularPage extends Component {
 }
 
 class PopularTab extends Component {
-    render() {
+    constructor(props){
+        super(props);
+        const {tabLabel} =this.props;
+        this.storeName=tabLabel;
+    }
+    componentWillMount(){
+        const {onLoadPopularData}=this.props;
+        const url = this.genFetchUrl(this.storeName);
+        onLoadPopularData(this.storeName,url)
+    }
+    genFetchUrl(key) {
+        return URL + key + QUERY_STR;
+    }
+    renderItem(data) {
+        const item=data.item;
         return (
             <View>
-                <Text>PopularTab</Text>
-                <Text onPress={
-                    () => {
-                        NavigationUtil.goPage({navigation:this.props.navigation}, 'DetailPage');
-                    }
-                }>跳转到详情页</Text>
+                    <Text>{JSON.stringify(item)}</Text>
+            </View>
+        )
+    }
+    render() {
+        const {popular}=this.props;
+        let store=popular[this.storeName];
+       
+        if(!store){
+            store={
+                items:[],
+                isLoading:false
+            }
+        }
+        console.log(store.item)
+        return (
+            <View  style={styles.container}>
+                <FlatList
+                    data={store.items} 
+                    keyExtractor={items => "" + items.id}
+                    renderItem={data => this.renderItem(data)}
+                    refreshControl={
+                        <RefreshControl
+                            title={'Loading'}
+                            titleColor={THEME_COLOR}
+                            colors={[THEME_COLOR]}
+                            refreshing={store.isLoading}
+                            onRefresh={() => this.loadData()}
+                            tintColor={THEME_COLOR}
+                        />
+                   }
+                />
             </View>
         );
     }
@@ -104,7 +133,16 @@ const styles = StyleSheet.create({
         marginBottom: 6,
     },
 });
-const mapDispatchToProps = dispatch => ({
-    onThemeChange: theme => dispatch(actions.onThemeChange(theme)),
+const mapStateToProps = state => ({
+    popular: state.popular
 });
-export default connect(null, mapDispatchToProps)(PopularPage);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onLoadPopularData(storeName,url){
+            dispatch(actions.onLoadPopularData(storeName,url))
+        }
+    }
+    //onThemeChange: theme => dispatch(actions.onThemeChange(theme)),
+};
+const PopularTabPage = connect(mapStateToProps, mapDispatchToProps)(PopularTab);
+// export default connect(mapStateToProps, mapDispatchToProps)(PopularTab);
